@@ -53,7 +53,7 @@ export class AuthService {
     return null;
   }
 
-  async logout({ sessionId }) {
+  async logout() {
     try {
       //   return await this.account.deleteSession({sessionId}); to delete the one particular sesssion using id or if want to delete current one then pass 'current'
       //delete all the sessions
