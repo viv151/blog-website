@@ -1,5 +1,7 @@
 import conf from "../conf/conf";
 import { Client, ID, Query, Storage, TablesDB } from "appwrite";
+import { Permission, Role } from "appwrite";
+
 
 export class Service {
   client = new Client();
@@ -12,18 +14,17 @@ export class Service {
     this.bucket = new Storage(this.client); //storage or bucket same
   }
 
-  async createPost({ title, slug, content, featuredImg, status, userId }) {
+  async createPost({ title, slug, content, featuredimg, status, userId }) {
     try {
       await this.tablesDB.createRow({
         databaseId: conf.appDatabseId,
-        tableId: conf.appWriteUrl,
-        slug, //we can also create a unique id or we can also use slug
+        tableId: conf.appTableId,
+        rowId: slug, //we can also create a unique id or we can also use slug
         data: {
           //data to be passed in
           title,
-          slug,
           content,
-          featuredImg,
+          featuredimg,
           status,
           userId,
         },
@@ -34,7 +35,7 @@ export class Service {
     }
   }
 
-  async updatePost(slug, { title, content, featuredImg, status }) {
+  async updatePost(slug, { title, content, featuredimg, status }) {
     try {
       return await this.tablesDB.updateRow({
         databaseId: conf.appDatabseId, //"<DATABASE_ID>",
@@ -43,7 +44,7 @@ export class Service {
         data: {
           title,
           content,
-          featuredImg,
+          featuredimg,
           status,
         },
       });
@@ -100,6 +101,10 @@ export class Service {
         bucketId: conf.appBucketId,
         fileId: ID.unique(),
         file,
+        permissions: [
+          Permission.read(Role.any()), // 👈 Public access
+        ],
+
         // permissions: ["role:all"],  // optional
         // onProgress: (progress) => console.log(progress), // optional
       });
@@ -123,21 +128,9 @@ export class Service {
   }
 
   getFilePreview(fileId) {
-    return this.bucket.getFilePreview({
+    return this.bucket.getFileView({
       bucketId: conf.appBucketId, // '<BUCKET_ID>',
       fileId, // '<FILE_ID>',
-      width: 0, // optional
-      height: 0, // optional
-      gravity: ImageGravity.Center, // optional
-      quality: -1, // optional
-      borderWidth: 0, // optional
-      borderColor: "", // optional
-      borderRadius: 0, // optional
-      opacity: 0, // optional
-      rotation: -360, // optional
-      background: "", // optional
-      output: ImageFormat.Jpg, // optional
-      token: "<TOKEN>", // optional
     });
   }
 }

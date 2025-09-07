@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import authService from "../appwrite/auth";
 import { login as authLogin } from "../store/authSlice";
-import Input from "./Input";
-import Button from "./Button";
+import { Button, Input, Logo } from "./index";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -24,6 +23,7 @@ const Login = () => {
         if (userData) {
           dispatch(authLogin(userData));
         }
+        console.log(userData)
         //when user is logged in send them to the proper route
         navigate("/");
       }
